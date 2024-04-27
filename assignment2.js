@@ -113,8 +113,14 @@ export class Assignment2 extends Base_Scene {
         //        This should make changes to the model_transform matrix, draw the next box, and return the newest model_transform.
         // Hint:  You can add more parameters for this function, like the desired color, index of the box, etc.
         const blue = hex_color("#1a9ffa");
+        const t = program_state.animation_time / 1000;
+        const rotation_angle = 0.05*Math.PI; //used for staying still at max rotation
+        const rotation_time = (.05*Math.PI/2) + (.05*Math.PI/2)*Math.sin(t);
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:blue}));
         model_transform = model_transform.times(Mat4.translation(0, 2, 0));
+        model_transform = model_transform.times(Mat4.translation(-1, -1, 0))
+                                     .times(Mat4.rotation(-rotation_time, 0, 0, -1))
+                                     .times(Mat4.translation(1, 1, 0));
         return model_transform;
     }
 
@@ -122,11 +128,14 @@ export class Assignment2 extends Base_Scene {
         super.display(context, program_state);
         const blue = hex_color("#1a9ffa");
         let model_transform = Mat4.identity();
-
+        const rotation_angle = 0.05*Math.PI;
       
         // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
         for (let i = 0; i <= 8; i++) {
-            model_transform = this.draw_box(context,program_state,model_transform);
+          model_transform = this.draw_box(context,program_state,model_transform);
         }
+        //model_transform = model_transform.times(Mat4.rotation(-rotation_angle, 0, 1, 0))
+        //this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:blue}));
+
     }
 }
