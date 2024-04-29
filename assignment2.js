@@ -197,6 +197,7 @@ export class Assignment2 extends Base_Scene {
         const rotation_angle = 0.05*Math.PI;
       
         // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
+        model_transform = model_transform.times(Mat4.scale(1,1.5,1));
         for (let i = 0; i < 8; i++) {
           model_transform = this.draw_box(context,program_state,model_transform,i);
         }
