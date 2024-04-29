@@ -29,6 +29,25 @@ class Cube_Outline extends Shape {
         // When a set of lines is used in graphics, you should think of the list entries as
         // broken down into pairs; each pair of vertices will be drawn as a line segment.
         // Note: since the outline is rendered with Basic_shader, you need to redefine the position and color of each vertex
+        this.arrays.position = Vector3.cast([1,-1,-1]
+            ,[1,1,-1], 
+            [-1,1,1], 
+            [-1,-1,1], 
+             [1,1,1], 
+             [-1,1,1],
+            [-1,-1,-1], 
+            [-1,-1,1],
+            [1,1,-1],
+             [-1,1,-1], 
+             [1,-1,-1],
+              [-1,-1,-1],
+              [-1,1,-1],
+               [-1,1,1],
+                 [1,-1,1],  [1,-1,-1],  [1,1,1],  [1,1,-1],
+            [1,-1,1],  [-1,-1,1],  [1,-1,1],  [1,1,1],  [-1,-1,-1], [-1,1,-1]);
+        this.arrays.color = Array(24).fill(color(1, 1, 1, 1));
+
+        this.indices = false;
     }
 }
 
@@ -36,6 +55,11 @@ class Cube_Single_Strip extends Shape {
     constructor() {
         super("position", "normal");
         // TODO (Requirement 6)
+        this.arrays.position = Vector3.cast( [ 1, -1,  1],[-1, -1, 1], [-1,  1,  1], [ 1,  1,  1], [-1, -1, -1], [ 1, -1, -1],[ 1,  1, -1],[-1,  1, -1]);
+        this.arrays.normal = Vector3.cast( [ 1, -1,  1],[-1, -1,  1], [-1,  1,  1], [ 1,  1,  1], [-1, -1, -1], [ 1, -1, -1], [ 1,  1, -1],[-1,  1, -1]);
+        this.indices.push(
+            2, 4, 7, 2, 3, 7, 3, 7, 6, 1, 0, 3, 1, 2, 3, 1, 2, 4, 3, 5, 6, 4, 5, 6, 4, 7, 6, 1, 0, 4, 0, 4, 5, 0, 3, 5,
+        );
     }
 }
 
@@ -117,6 +141,7 @@ export class Assignment2 extends Base_Scene {
         // Add a button for controlling the scene.
         this.key_triggered_button("Outline", ["o"], () => {
             // TODO:  Requirement 5b:  Set a flag here that will toggle your outline on and off
+            this.outline = !(this.outline);
         });
         this.key_triggered_button("Sit still", ["m"], () => {
             // TODO:  Requirement 3d:  Set a flag here that will toggle your swaying motion on and off.
@@ -133,7 +158,21 @@ export class Assignment2 extends Base_Scene {
         const t = program_state.animation_time / 1000;
         const rotation_angle = 0.05*Math.PI; //used for staying still at max rotation
         const rotation_time = (.05*Math.PI/2) + (.05*Math.PI/2)*Math.sin(t);
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:random}));
+        if (this.outline)
+        {
+            this.shapes.outline.draw(context, program_state, model_transform, this.white, "LINES");
+        }
+        else
+        {
+            if (index == 1 | index == 3 | index == 5 | index ==7)
+            {
+                this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:random}),"TRIANGLE_STRIP");
+            }
+            else
+            {
+                this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:random}));
+            }
+        }
         if (this.sit_still)
         {
             model_transform = model_transform.times(Mat4.translation(0, 2, 0));
